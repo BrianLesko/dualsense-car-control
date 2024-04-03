@@ -1,6 +1,6 @@
 ##################################################################
 # Brian Lesko
-# 1/29/2024
+# 4/3/2024
 # Connect to a dualsense controller and send a UDP Signal to a certain IP address
 
 import streamlit as st
@@ -31,18 +31,6 @@ def main():
     try: ds.connect()
     except Exception as e:
         st.error("Error occurred while connecting to Dualsense controller. Make sure the controller is wired up and the vendor and product ID's are correctly set in the python script.")
-
-    # Set up the serial connection 
-    port = '/dev/tty.usbmodem11301'
-    try: 
-        # on mac in terminal: 'ls /dev/tty.*' to find the port manually
-        BAUD = 9600
-        my_arduino = ard.arduino(port,BAUD,.1)
-        with st.sidebar: st.write(f"Connection to {port} successful")
-    except Exception as e:
-        st.write("Could not connect to arduino")
-
-    my_arduino.send(str(0))
 
     # Set up the plot
     fig, ax = plt.subplots()
@@ -78,16 +66,17 @@ def main():
         power = int(np.interp(power,[-255,255],[50,120]))+5 # calibrated at 
         with Sending: st.write(f"Sending: {power}")
 
-        # Send the command via serial message 
-        #with Status: st.write("Sending Serial")
+        # Send the command via UDP/IP
         try:
-            my_arduino.send('throttle:'+str(power))
-            my_arduino.send('servo:'+str(angle))
+            if 'client' not in st.session_state:
+                st.session_state.client = eth("client",'192.168.1.75', 12345)
+            st.session_state.client.s.sendto(power, ('192.168.1.75', 12345))
         except Exception as e:
             with Message: 
-                st.write("Error occurred while sending the serial signal.")
+                st.error("Error occurred while sending the UDP signal. Make sure the IP address and port are correctly set in the python script.")
 
-        #with Status: st.write("Replotting")
+
+        with Status: st.write("Replotting")
         # Update a plot with the current Input signal, Power.
         with image_spot:
             data.set_data([0], [power])  # Provide sequences for x and y coordinates

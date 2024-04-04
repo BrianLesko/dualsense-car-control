@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 import dualsense # DualSense controller communication
 import customize_gui # streamlit GUI modifications
 from ethernet import ethernet as eth # This class contains the methods 
-import arduino as ard
 DualSense = dualsense.DualSense # this class contains methods to communicate with the DualSense controller
 gui = customize_gui.gui() # this class contains methods to modify the streamlit GUI
 
@@ -85,7 +84,7 @@ def main():
         with image_spot:
             data.set_data([0], [power])  # Provide sequences for x and y coordinates
             history.append(power)
-            ax.set_ylim([70, 100])
+            ax.set_ylim([55, 125])
             st.pyplot(fig)
 
 main()

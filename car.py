@@ -37,3 +37,5 @@ def main():
         #    my_arduino.send('servo:'+str(angle))
         #except Exception as e:
         #    print("Error occurred while sending the serial signal.")
+
+main()

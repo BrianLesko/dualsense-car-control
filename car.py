@@ -19,8 +19,8 @@ def main():
 
     # Set up the UDP connection
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    #self.server.bind((self.IP, 12345))
-    #self.log_and_serial_send(f'Successfully Created a server at {self.IP}')
+    IP = '172.20.10.3'
+    my_socket.bind((IP, 12345))
 
     while True:
         # Receive UDP Signal

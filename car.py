@@ -7,9 +7,10 @@ import socket
 def main():
 
     # Set up the serial connection 
-    port = '/dev/tty.usbmodem11301'
+    port = '/dev/ttyACM0'
+    # on mac in terminal: 'ls /dev/tty.*' to find the port manually
+    # on linux in terminal: 'ls /dev/tty*' to find the port manually or 'dmesg | grep tty' to find the port manually
     try: 
-        # on mac in terminal: 'ls /dev/tty.*' to find the port manually
         BAUD = 9600
         my_arduino = ard.arduino(port,BAUD,.1)
         print(f"Connection to {port} successful")

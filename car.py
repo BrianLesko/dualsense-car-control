@@ -23,7 +23,7 @@ def main():
 
     while True:
         # Receive UDP Signal
-        data, addr = my_socket.server.recvfrom(1024) # buffer size is 1024 bytes
+        data, addr = my_socket.recvfrom(1024) # buffer size is 1024 bytes
         if data:
             new_data = data.decode("utf-8")
             print("received: %s" % new_data)

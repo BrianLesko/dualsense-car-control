@@ -31,12 +31,10 @@ def main():
         #except Exception as e:
         #    print("Error occurred while receiving the UDP signal.")
 
-
         # Send Serial Signal 
-        #try:
-        #    my_arduino.send('throttle:'+str(power))
-        #    my_arduino.send('servo:'+str(angle))
-        #except Exception as e:
-        #    print("Error occurred while sending the serial signal.")
+        try:
+            my_arduino.send(new_data)
+        except Exception as e:
+            print("Error occurred while sending the serial signal.")
 
 main()

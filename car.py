@@ -23,13 +23,12 @@ def main():
 
     while True:
         # Receive UDP Signal
-        try: 
-            data, addr = my_socket.server.recvfrom(1024) # buffer size is 1024 bytes
-            if data:
-                new_data = data.decode("utf-8")
-                print("received: %s" % new_data)
-        except Exception as e:
-            print("Error occurred while receiving the UDP signal.")
+        data, addr = my_socket.server.recvfrom(1024) # buffer size is 1024 bytes
+        if data:
+            new_data = data.decode("utf-8")
+            print("received: %s" % new_data)
+        #except Exception as e:
+        #    print("Error occurred while receiving the UDP signal.")
 
 
         # Send Serial Signal 

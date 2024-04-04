@@ -43,6 +43,7 @@ def main():
     # Control Loop
     history = []
     messages = []
+    IP = '172.20.10.3'
     while True:
         with Status: st.write("Reading Controller")
         ds.receive()
@@ -66,15 +67,18 @@ def main():
         power = int(np.interp(power,[-255,255],[50,120]))+5 # calibrated at 
         with Sending: st.write(f"Sending: {power}")
 
+        throttle = 'throttle:'+str(power)
+        steering = 'servo:'+str(angle)
         # Send the command via UDP/IP
+        with Message: st.write("Sending UDP Signal")
         try:
             if 'client' not in st.session_state:
-                st.session_state.client = eth("client",'192.168.1.75', 12345)
-            st.session_state.client.s.sendto(power, ('192.168.1.75', 12345))
+                st.session_state.client = eth("client",IP, 12345)
+            st.session_state.client.s.sendto(throttle.encode(), (IP, 12345))
+            st.session_state.client.s.sendto(steering.encode(), (IP, 12345))
         except Exception as e:
             with Message: 
                 st.error("Error occurred while sending the UDP signal. Make sure the IP address and port are correctly set in the python script.")
-
 
         with Status: st.write("Replotting")
         # Update a plot with the current Input signal, Power.

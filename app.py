@@ -58,9 +58,9 @@ def main():
 
         # Joystick control 
         angle = 95
-        if abs(ds.LX) > 0.1:
-            with Status: st.write(ds.LX)
-            angle = int(np.interp(ds.LX,[-180,180],[55,130]))
+        if abs(ds.RX) > 0.1:
+            with Status: st.write(ds.RX)
+            angle = int(np.interp(ds.RX,[-180,180],[45,145]))
 
         # Power Calibration
         power = int(np.interp(power,[-255,255],[50,120]))+5 # calibrated at 

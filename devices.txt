@@ -1,3 +1,5 @@
+# Not plugged in 
+
 /dev/tty    /dev/tty57    /dev/ttyca  /dev/ttyprintk  /dev/ttyt5  /dev/ttywb
 /dev/tty0   /dev/tty58    /dev/ttycb  /dev/ttyq0      /dev/ttyt6  /dev/ttywc
 /dev/tty1   /dev/tty59    /dev/ttycc  /dev/ttyq1      /dev/ttyt7  /dev/ttywd

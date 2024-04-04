@@ -7,7 +7,7 @@ import socket
 def main():
 
     # Set up the serial connection 
-    port = '/dev/tty'
+    port = '/dev/ttyACM0'
     # on mac in terminal: 'ls /dev/tty.*' to find the port manually
     # on linux in terminal: 'ls /dev/tty*' to find the port manually or 'dmesg | grep tty' to find the port manually
     try: 

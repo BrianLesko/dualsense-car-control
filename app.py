@@ -8,7 +8,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import dualsense # DualSense controller communication
 import customize_gui # streamlit GUI modifications
-from ethernet import ethernet as eth # This class contains the methods 
 DualSense = dualsense.DualSense # this class contains methods to communicate with the DualSense controller
 gui = customize_gui.gui() # this class contains methods to modify the streamlit GUI
 

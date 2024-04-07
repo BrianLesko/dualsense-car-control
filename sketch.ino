@@ -1,4 +1,5 @@
 // Brian Lesko 
+// Controls the steering for 3 servos and the throttle for an brushless DC motor
 
 #include <Servo.h>
 
@@ -15,7 +16,7 @@ int left = 130;
 
 void setup() {
   Serial.begin(9600);
-  pinMode(9, OUTPUT);     //sets pin 9 to output
+  pinMode(9, OUTPUT);
   pinMode(10, OUTPUT);
  
   steering.attach(9);   // attach steering servo to pin 9

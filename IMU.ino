@@ -11,7 +11,7 @@ void setup() {
   Serial.println("Started");
   if (!IMU.begin()) {
     Serial.println("Failed to initialize IMU!");
-    while (1);
+    while (1); 
   }
 
   Serial.print("Accelerometer sample rate = ");
@@ -54,6 +54,7 @@ float norm(float x, float y, float z) {
 }
 
 void loop() {
+  unsigned long startTime = millis(); // Start time of the loop
 
   if (IMU.accelerationAvailable()) {
     IMU.readAcceleration(x, y, z);
@@ -62,8 +63,9 @@ void loop() {
 
   if (IMU.gyroscopeAvailable()) {
     IMU.readGyroscope(rx,ry, rz);
-    float magn = norm(rx,ry,rz);
-    Vector3D gyr = {rx/magn, ry/magn, rz/magn};
+    roll += rx * dt, pitch += ry * dt, yaw += rz * dt;
+    //float magn = norm(rx,ry,rz);
+    //Vector3D gyr = {rx/magn, ry/magn, rz/magn};
 
   if (magneticFieldAvailable()) {
     IMU.readMagneticField(mx, my, mz);
@@ -78,5 +80,6 @@ void loop() {
   Vector3D E = crossProduct(-acc, mag);
   Vector3D N = crossProduct(E, -acc);
 
-
+  unsigned long endTime = millis(); // End time of the loop
+  dt = endTime - startTime
 }

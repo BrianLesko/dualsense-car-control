@@ -1,6 +1,5 @@
-##################################################
 # Brian Lesko  12/3/2023
-# This code implements some some gui shortcuts that are used to customize the UI of the app.py file - using the low code streamlit library.
+# helper library for GUI customization
 
 import streamlit as st
 

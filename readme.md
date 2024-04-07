@@ -1,6 +1,6 @@
 
-# wireless arduino control using a PS5 controller
-Control a Pulse Width modulation (PWM) pin of an Arduino ESP32 microcontroller using a Dualsense PS5 remote, wirelessly over a wifi network. 
+# Mobile robot
+All the code needed to manually control my second mobile robot, using a PS5 remote. 
 
 &nbsp;
 
@@ -19,7 +19,10 @@ This code uses the following libraries:
 &nbsp;
 
 ## Usage
-1. fork the repository
+1. clone this repository
+```
+git clone 
+```
 2. change the wifi SSID and password as well as the PS5 remote vendorID and productID in 'app.py'
 4. Run the arduino nano.py file on an arduino nano esp32 running mircopython
 5. run the streamlit app with the following command in your terminal

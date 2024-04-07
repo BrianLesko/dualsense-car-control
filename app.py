@@ -1,7 +1,7 @@
 ##################################################################
 # Brian Lesko
 # 4/3/2024
-# Connect to a dualsense controller and send a UDP Signal to a certain IP address
+# Run on your base station. Connect to a dualsense controller and send a UDP Signal to a the Car's IP address
 
 import streamlit as st
 import numpy as np

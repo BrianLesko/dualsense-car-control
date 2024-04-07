@@ -1,4 +1,5 @@
 # Brian Lesko
+# helper library
 # receive and translate DualSense controller io (PS5 remote) over a usb connection
 # Used for controlling animations, a maze game, and a sketchpad app
 # 11/27/23

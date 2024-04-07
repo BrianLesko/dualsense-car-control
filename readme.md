@@ -1,6 +1,6 @@
 
 # Mobile robot
-All the code needed to manually control my second mobile robot, using a PS5 remote. 
+All the code needed to drive a mobile robot using a PS5 remote
 
 &nbsp;
 
@@ -8,7 +8,7 @@ All the code needed to manually control my second mobile robot, using a PS5 remo
 
 &nbsp;
 
-## Dependencies
+## Software Dependencies
 
 This code uses the following libraries:
 - `streamlit`: for building the user interface.
@@ -18,45 +18,47 @@ This code uses the following libraries:
 
 &nbsp;
 
+## Hardware Dependencies
+1. A base station computer
+2. A second computer for the robot
+3. A PWM capable arduino + cable + servo motors and BLDC Motor controller
+4. A PS5 remote + cable
+
 ## Usage
 1. clone this repository
 ```
-git clone 
+git clone https://github.com/BrianLesko/dualsense-car-control
 ```
-2. change the wifi SSID and password as well as the PS5 remote vendorID and productID in 'app.py'
-4. Run the arduino nano.py file on an arduino nano esp32 running mircopython
-5. run the streamlit app with the following command in your terminal
+2. The base station and robot computers must be on the same network. Set up each device with a static IP
+2. Change the robot IP in 'app.py' and 'car.py' you can also change the port which is '12345'
+3. Change the PS5 remote vendorID and productID in 'app.py'
+4. Plug the arduino into the robot
+5. Run the arduino sketch.ino file on your arduino
+6. Run the car.py file on your robot 
 ```
-Streamlit run app.py
+python car.py
+```
+7. plug the PS5 remote into the base station
+8. run the streamlit app with the following command in your base station terminal
+```
+streamlit run app.py
 ```
 
 This will start the local Streamlit server, and you can access the interface by opening a web browser and navigating to `http://localhost:8501`.
 
 &nbsp;
 
-## How it Works
-
-The app as follows:
-1. The hidapi library is used to initiate a connection to the PS5 controller
-2. The dualsense class is used to decode the received bytes
-4. the matplotlib library is used to create a visualization of the received signal from the triggers
-3. Streamlit is used to display the figure
-4. The ethernet class and UDP Socket communication is used to send the bytes to an IP address
-5. The app loops indefinitely until quit
-6. The Arduino connects to the internet, then receives the UDP signal and decodes it, then sets its PWM pin appropriately. 
-
-&nbsp;
-
 ## Repository Structure
 ```
 repository/
-├── app.py # the code and UI integrated together live here
+├── app.py # The base station UI to send the Internet commands to the robot
 ├── customize_gui # class for adding gui elements
 ├── dualsense.py # The class used to decode received bytes from the wired controller
+├── ethernet.py # a helper class for sending Internet IP communciation
+├── car.py # Recieves the internet commands and relays them to the arduino
+├── sketch.ino # the arduino code to control the motors
 ├── requirements.txt # the python packages needed to run locally
 ├── .gitignore # includes the local virtual environment named my_env
-├── ethernet.py
-├── robot.py
 └── docs/
     └── preview.png # preview photo for Github
 ```
@@ -65,10 +67,9 @@ repository/
 
 ## Topics 
 ```
-Python | Streamlit | Git | Low Code UI
-Sketchpad | HIDapi | decode bytes | PS5 | Sony | Dualsense | external device | communication 
-custom classes
-Self taught coding | Mechanical engineer | Robotics engineer
+Python | Low Code UI | Mobile robot | Internet IP 
+HIDapi | decode bytes | PS5 | Sony | Dualsense | external device | communication 
+Mechanical and Robotics engineer
 ```
 &nbsp;
 

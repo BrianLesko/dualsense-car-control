@@ -1,7 +1,7 @@
 # Brian Lesko 
 # Run this file on the mobile robot, it will relay the UDP signal to the arduino over the serial USB connection
 
-import unused.arduino as ard
+import arduino as ard
 import socket
 
 def main():

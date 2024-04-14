@@ -1,4 +1,4 @@
-# Brian Lesko, 12/10/2023
+# Brian Lesko
 # Ethernet communication class
 
 import socket
@@ -10,28 +10,61 @@ class ethernet:
         self.name = name
         self.IP = IP
         self.PORT = PORT
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # TCP is a connection-oriented protocol, meaning it requires a connection to be established between the client and the server before data can be sent.
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # Set the send buffer size
+        self.s.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 112)
+        # Set the receive buffer size
+        self.s.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 112)
+        self.s.settimeout(5)  # Set a timeout of 5 seconds
 
     def connect(self):
         messages = []
         try: 
             self.s.connect((self.IP, self.PORT))
             messages.append(f'The connection with *{self.name}* established.')
+            self.connected = True
         except socket.error as e:
             messages.append(f'Sorry, the connection with *{self.name}* was not established.')
             messages.append(e)
         return messages
     
+    def is_connected(self):
+        if self.s.getsockopt(socket.SOL_SOCKET, socket.SO_ERROR) == 0:
+            self.connected = True
+        else:
+            self.connected = False
+        return self.connected
+
+    
     def disconnect(self): 
         self.s.close()
         return f"The connection with *{self.name}* was closed."
+    
+    def receive(self):
+        response = self.s.recv(1024) # Max amount of bytes to receive
+        if response:
+            return response.decode()
+        else:
+            return None
+
+    def send(self, command):
+        if isinstance(command, str):
+            bytes = command.encode()
+        else:
+            bytes = str(command).encode("utf-8")
+        self.s.sendall(bytes)
 
     def send_and_receive(self, command):
-        bytes = command.encode()
+        if isinstance(command, str):
+            bytes = command.encode()
+        else:
+            bytes = str(command).encode("utf-8")
         self.s.sendall(bytes)
-        response = self.s.recv(1024)
-        return response.decode()
+        response = self.s.recv(1024) # Max amount of bytes to receive
+        if response:
+            return response.decode()
+        else:
+            return None 
     
     def to_df(self):
         df = pd.DataFrame({'name': [self.name], 'ipv4': [self.IP], 'port': [self.PORT]})
@@ -95,13 +128,3 @@ class ethernet:
                 """
             errors = True
         return response, errors
-    
-def example():
-    # Example of how to use the ethernet class
-    IP = 'Your_IP'
-    PORT = 23
-    name = 'Your_name'
-    ethernet = ethernet(name, IP, PORT)
-    ethernet.connect()
-    command = 'Your_command'
-    response = ethernet.send_and_receive(command)

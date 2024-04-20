@@ -42,7 +42,7 @@ def main():
     # Control Loop
     history = []
     messages = []
-    IP = '172.20.10.8'
+    IP = '172.20.10.3'
     while True:
         with Status: st.write("Reading Controller")
         ds.receive()

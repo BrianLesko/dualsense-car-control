@@ -57,10 +57,11 @@ def main():
         if abs(ds.L2) > 1:
             power = -ds.L2 
         if abs(ds.R2) > 1:
-            amplitude = 8
-            offset = 85 + amplitude
-            frequency = 2
-            power = amplitude * math.sin(2 * math.pi * frequency * time.time()) + offset
+            #amplitude = 8
+            #offset = 85 + amplitude
+            #frequency = 2
+            #power = amplitude * math.sin(2 * math.pi * frequency * time.time()) + offset
+            power = ds.R2
             with Trigger: st.write(ds.R2)
 
         # Joystick control 
@@ -70,7 +71,7 @@ def main():
             angle = int(np.interp(ds.RX,[-180,180],[45,145]))
 
         # Power Calibration
-        #power = int(np.interp(power,[0,255],[90,120]))+5 # calibrated at 
+        power = int(np.interp(power,[0,255],[85,105])) # calibrated at 
         with Sending: st.write(f"Sending: {power}")
 
         throttle = 'throttle:'+str(power)

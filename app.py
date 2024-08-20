@@ -27,7 +27,7 @@ def main():
     Status = st.empty()
     
     # Setting up the dualsense controller connection
-    vendorID, productID = int("0x054C", 16), int("0x0CE6", 16)
+    vendorID, productID = int("0x054C", 16), int("0x0CE6", 16) # these are probably good
     ds = DualSense(vendorID, productID)
     try: ds.connect()
     except Exception as e:
@@ -44,7 +44,7 @@ def main():
     # Control Loop
     history = []
     messages = []
-    IP = '172.20.10.3'
+    IP = '10.42.0.1'  # EDIT THIS 
     Trigger = st.empty()
     while True:
         with Status: st.write("Reading Controller")

@@ -3,6 +3,7 @@
 
 import arduino as ard
 import socket
+from get_ip import get_ip_address
 
 def main():
 
@@ -19,9 +20,10 @@ def main():
 
     # Set up the UDP connection
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    IP = '172.20.10.3'
+    IP = get_ip_address('wlan0')
     my_socket.bind((IP, 12345))
-
+    print(f"Bound to {IP}")
+    print(f"Waiting for control signal...")
     while True:
         # Receive UDP Signal
         data, addr = my_socket.recvfrom(1024) # buffer size is 1024 bytes

@@ -22,9 +22,12 @@ def main():
     col1, col2, col3 = st.columns([1,4,1])
     with col2: image_spot = st.empty()
     Message = st.empty()
-    Sending = st.empty()
     Incoming = st.empty()
     Status = st.empty()
+    RawPower = st.empty()
+    Power = st.empty()
+    AvgPower = st.empty()
+
     
     # Setting up the dualsense controller connection
     vendorID, productID = int("0x054C", 16), int("0x0CE6", 16) # these are probably good
@@ -43,26 +46,24 @@ def main():
 
     # Control Loop
     history = []
-    messages = []
     IP = '10.42.0.1'  # EDIT THIS 
     Trigger = st.empty()
+    window_size = 10  # Number of recent powers to track
+    powers = []
     while True:
         with Status: st.write("Reading Controller")
         ds.receive()
         ds.updateTriggers()
         ds.updateThumbsticks()
+        ds.updateDpad()
 
         # Button Control
-        power = 90
+        power = 0
         if abs(ds.L2) > 1:
             power = -ds.L2 
         if abs(ds.R2) > 1:
-            #amplitude = 8
-            #offset = 85 + amplitude
-            #frequency = 2
-            #power = amplitude * math.sin(2 * math.pi * frequency * time.time()) + offset
             power = ds.R2
-            with Trigger: st.write(ds.R2)
+            power = int(np.interp(power,[0,255],[0,100])) # calibrated at 
 
         # Joystick control 
         angle = 95
@@ -70,9 +71,31 @@ def main():
             with Status: st.write(ds.RX)
             angle = int(np.interp(ds.RX,[-180,180],[45,145]))
 
+        # Boost Button with Dpad up 
+        maxpower = 97
+        set_throttle = 95.5
+        if ds.DpadUp == True: 
+            maxpower = 105
+            set_throttle = 97
+
         # Power Calibration
-        power = int(np.interp(power,[0,255],[85,105])) # calibrated at 
-        with Sending: st.write(f"Sending: {power}")
+        RawPower.write(f"Normalized Power: {power}")
+        normalized_power = power
+        power = int(np.interp(power,[0,100],[85,105])) # calibrated at 
+        if normalized_power > 0 and normalized_power < 80: 
+            # generate a number with a bell curve distribution with mean 90 and std 5
+            count_94 = sum(1 for x in powers if x == set_throttle)
+            max_94_count = int(window_size * (max(normalized_power,20) / 100))
+            if count_94 < max_94_count:
+                power = set_throttle
+            else:
+                power = 80
+        else:
+            power = int(np.interp(normalized_power,[0,100],[90,maxpower]))
+        powers.append(power)
+        if len(powers) > 9: powers.pop(0) 
+        Power.write(f"Sending Power: {power}")
+        AvgPower.write(f"Avg Power: {np.mean(powers)}")
 
         throttle = 'throttle:'+str(power)
         steering = 'servo:'+str(angle)

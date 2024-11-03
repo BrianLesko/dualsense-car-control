@@ -4,8 +4,6 @@
 # Run on your base station. Connect to a dualsense controller and send a UDP Signal to a the Car's IP address
 
 import streamlit as st
-import math
-import time
 import numpy as np
 import matplotlib.pyplot as plt
 import dualsense # DualSense controller communication
@@ -17,18 +15,18 @@ gui = customize_gui.gui() # this class contains methods to modify the streamlit 
 def main():
     # Set up the app UI
     gui.clean_format(wide=True)
-    gui.about(text = "This code implements...")
+    gui.about(text = "Plug in a PS5 remote and control your robot")
     st.title("Control Input")
     col1, col2, col3 = st.columns([1,4,1])
     with col2: image_spot = st.empty()
-    Message = st.empty()
-    Incoming = st.empty()
-    Status = st.empty()
-    RawPower = st.empty()
-    Power = st.empty()
-    AvgPower = st.empty()
+    with st.sidebar:
+        Message = st.empty()
+        Incoming = st.empty()
+        Status = st.empty()
+        RawPower = st.empty()
+        Power = st.empty()
+        AvgPower = st.empty()
 
-    
     # Setting up the dualsense controller connection
     vendorID, productID = int("0x054C", 16), int("0x0CE6", 16) # these are probably good
     ds = DualSense(vendorID, productID)
@@ -112,7 +110,7 @@ def main():
                 #st.error("Error occurred while sending the UDP signal. Make sure the IP address and port are correctly set in the python script.")
 
         with Status: st.write("Replotting")
-        # Update a plot with the current Input signal, Power.
+        # Update a plot with the current Input Power.
         with image_spot:
             data.set_data([0], [power])  # Provide sequences for x and y coordinates
             history.append(power)

@@ -70,22 +70,6 @@ class ethernet:
         df = pd.DataFrame({'name': [self.name], 'ipv4': [self.IP], 'port': [self.PORT]})
         return df
     
-    # For the keyence instance of an ethernet connection 
-    def prime_print(self,print):
-        command_2 = 'PR' + ',1' + '\r' # set the program number
-        command = 'SB' + '\r' # we acquire the system status to check if we are ready to print
-        command_3 = 'BK' + ',1,0,' + print + '\r' # change the string to print
-        commands = [command, command_2, command_3]
-        responses = []
-        messages = []
-        for command in commands:
-            message = f"Sending to *{self.name}*: {command}"
-            response = self.send_and_receive(command)
-            message2 = f"The response from *{self.name}* is: "
-            messages.append(message + "\n" + message2)
-            responses.append(response)
-        return responses, messages
-    
     @classmethod
     def from_excel(cls, excel_file_name):
         # To create a list of ethernet objects from an excel file

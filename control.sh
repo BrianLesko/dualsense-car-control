@@ -4,4 +4,4 @@
 # Run this to start the control app on your base station
 
 source my_env/bin/activate
-streamlit run app.py
+streamlit run control.py

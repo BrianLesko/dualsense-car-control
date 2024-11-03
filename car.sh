@@ -1,9 +1,7 @@
 #!/bin/bash
 
 # Control the mobile robot manually with a dualsense ps5 controller
-
-# First we use the default wifi chip in the pi wlan0 to create a hotspot
-#sudo nmcli device wifi hotspot ssid lesko-car password 12081999 ifname wlan0 & 
+# Run this on your robot
 
 # Next, we host the manual control webpage 
 source my_env/bin/activate

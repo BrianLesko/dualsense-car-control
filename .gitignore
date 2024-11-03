@@ -2,3 +2,6 @@ __pycache__
 my_env
 .gitattributes
 DS_store
+.start_cam.sh.swp
+.vscode/arduino.json
+start_cam.sh

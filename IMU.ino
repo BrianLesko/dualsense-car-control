@@ -7,7 +7,6 @@
 
 struct Vector3D {
     float x, y, z;
-
     // Overload unary minus operator
     Vector3D operator-() const {
         return Vector3D{-x, -y, -z};

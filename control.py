@@ -1,4 +1,3 @@
-##################################################################
 # Brian Lesko
 # 4/3/2024
 # Run on your base station. Connect to a dualsense controller and send a UDP Signal to a the Car's IP address
@@ -31,8 +30,7 @@ def main():
     vendorID, productID = int("0x054C", 16), int("0x0CE6", 16) # these are probably good
     ds = DualSense(vendorID, productID)
     try: ds.connect()
-    except Exception as e:
-        st.error("Error occurred while connecting to Dualsense controller. Make sure the controller is wired up and the vendor and product ID's are correctly set in the python script.")
+    except Exception as e: st.error("Error occurred while connecting to Dualsense controller. Make sure the controller is wired up and the vendor and product ID's are correctly set in the python script.")
 
     # Set up the plot
     fig, ax = plt.subplots()
@@ -43,7 +41,6 @@ def main():
         spine.set_visible(False)
 
     # Control Loop
-    history = []
     IP = '10.42.0.1'  # EDIT THIS 
     Trigger = st.empty()
     window_size = 10  # Number of recent powers to track
@@ -60,8 +57,7 @@ def main():
         if abs(ds.L2) > 1:
             power = -ds.L2 
         if abs(ds.R2) > 1:
-            power = ds.R2
-            power = int(np.interp(power,[0,255],[0,100])) # calibrated at 
+            power = int(np.interp(ds.R2,[0,255],[0,100])) # calibrated at 
 
         # Joystick control 
         angle = 95
@@ -76,12 +72,11 @@ def main():
             maxpower = 105
             set_throttle = 97
 
-        # Power Calibration
+        # Power Calibration, accounds for the ESC being terrible at low speeds.
         RawPower.write(f"Normalized Power: {power}")
         normalized_power = power
-        power = int(np.interp(power,[0,100],[85,105])) # calibrated at 
+        #power = int(np.interp(power,[0,100],[85,105])) # calibrated at 
         if normalized_power > 0 and normalized_power < 80: 
-            # generate a number with a bell curve distribution with mean 90 and std 5
             count_94 = sum(1 for x in powers if x == set_throttle)
             max_94_count = int(window_size * (max(normalized_power,20) / 100))
             if count_94 < max_94_count:
@@ -107,14 +102,10 @@ def main():
         except Exception as e:
             with Message: 
                 st.write(e)
-                #st.error("Error occurred while sending the UDP signal. Make sure the IP address and port are correctly set in the python script.")
 
-        with Status: st.write("Replotting")
         # Update a plot with the current Input Power.
         with image_spot:
             data.set_data([0], [power])  # Provide sequences for x and y coordinates
-            history.append(power)
             ax.set_ylim([55, 125])
             st.pyplot(fig)
-
 main()

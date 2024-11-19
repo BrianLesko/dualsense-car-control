@@ -2,13 +2,19 @@
 # helper library
 # receive and translate DualSense controller io (PS5 remote) over a usb connection
 # Used for controlling animations, a maze game, and a sketchpad app
-# 11/27/23
+# 11/18/24
 
 import hid
 import numpy as np
 import math
 
 class DualSense:
+    """
+      # 11/27/23
+      Use Sonys Dualsense controller for the PS5 in your python projects
+      This class wraps for the hidapi library
+      Built for mac
+    """
 
     def __init__(self, vendorID, productID):
         self.vendorID = vendorID
@@ -277,3 +283,148 @@ class DualSense:
         self.updateGyrometer(n=1)
         self.updateDpad()
         self.updateButtons()
+
+    def example():
+        DualSense = wiredDualSense()
+        vendorID, productID = int("0x054C", 16), int("0x0CE6", 16) # these are probably good
+        ds = DualSense(vendorID, productID)
+        ds.connect()
+        ds.receive() # Receive the current controller states, put them in a buffer
+        ds.updateTriggers() # Use the buffer to update the object oriented ds object
+        ds.updateThumbsticks()
+        ds.updateDpad()
+
+class wirelessDualSense:
+    """
+    Brian Lesko
+    11/18/24
+    Wraps the hidapi to poll a PS5 remote from your python program connected over bluetooth. 
+    Built for Mac and Linux
+    """
+
+    def __init__(self,vendorID,productID):
+        self.vendorID = vendorID
+        self.productID = productID
+        self.device = hid.device()
+        self.data = []
+
+        # Initialize Dpad states
+        self.DpadUp = False
+        self.DpadDown = False
+        self.DpadLeft = False
+        self.DpadRight = False
+
+        # Initialize button states
+        self.dpad_up = False
+        self.dpad_right = False
+        self.dpad_down = False
+        self.dpad_left = False
+        self.L1 = False
+        self.L2 = False
+        self.R1btn = False
+        self.R2btn = False
+
+        # Initialize gyro readings
+        #self.Pitch = []
+        #self.Yaw = []
+        #self.Roll = []
+
+        # Initialize accelerometer readings
+        #self.X = []
+        #self.Y = []
+        #self.Z = []
+
+        # Initialize the Touchpad 
+        #self.touchpad_x = []
+        #self.touchpad_y = []
+        # Touchpad two finger touch
+        #self.touchpad1_x = []
+        #self.touchpad1_y = []
+
+        # Initialize the battery readings
+        #self.battery_state = "POWER_SUPPLY_STATUS_UNKNOWN"
+        #self.battery_level = 0
+
+        # Initialize R3 and L3
+        self.R3 = False
+        self.L3 = False
+
+        # Initialize sending data back to the controller (lights, motors, etc)
+        #self.outReport = None
+
+    def disconnect(self):
+        self.device.close()
+
+    def connect(self):
+        self.device.open(self.vendorID, self.productID)
+
+    def receive(self, size=128):
+        self.data = self.device.read(size)
+        # The data is a lot shorter 
+        # [1, 127, 130, 127, 125, 8, 0, 20, 0, 0]
+
+    def send(self, command):
+        self.device.write(command)
+
+    def updateThumbsticks(self):
+        self.LX = self.data[1]
+        self.LY = self.data[2]
+        self.RX = self.data[3]
+        self.RY = self.data[4]
+        self.R3 = True if self.data[6] == 128 else False
+        self.L3 = True if self.data[6] == 64 else False
+
+    def updateTriggers(self):
+      self.L2 = self.data[8]
+      self.R2 = self.data[9]
+      self.R1 = True if self.data[6] == 2 else False
+      self.L1 = True if self.data[6] == 1 else False
+      if self.data[7] == 3: 
+        self.L1 = True
+        self.R1 = True
+
+
+    def updateButtons(self):
+        map = { # dpad up, right, down, left, triangle, circle, cross, square
+            # Only one Button Pressed
+            8: (False, False, False, False, False, False, False, False),
+            40: (False, False, False, False, False, False, True, False),
+            136: (False, False, False, False, True, False, False, False),
+            72: (False, False, False, False, False, True, False, False),
+            24: (False, False, False, False, False, False, False, True),
+            # Only One Dpad pressed
+            0: (True, False, False, False, False, False, False, False),
+            4: (False, False, True, False, False, False, False, False),
+            6: (False, False, False, True, False, False, False, False),
+            2: (False, True, False, False, False, False, False, False),
+            # Two Dpads pressed
+            7: (True, False, False, True, False, False, False, False),
+            1: (True, True, False, False, False, False, False, False),
+            5: (False, False, True, True, False, False, False, False),
+            3: (False, True, True, False, False, False, False, False),
+            # Two buttons pressed only
+            56: (False, False, False, False, False, False, True, True),
+            104: (False, False, False, False, False, True, True, False),
+            168: (False, False, False, False, True, False, True, False),
+            88: (False, False, False, False, False, True, False, True),
+            152: (False, False, False, False, True, False, False, True),
+            200: (False, False, False, False, True, True, False, False),
+            # DPadUp and a single Button
+            128: (True, False, False, False, True, False, False, False),
+            16: (True, False, False, False, False, False, False, True),
+            64: (True, False, False, False, False, True, False, False),
+            32: (True, False, False, False, False, False, True, False),
+            # DpadRight and a single Button
+            130: (False, True, False, False, True, False, False, False),
+            66: (False, True, False, False, False, True, False, False),
+            34: (False, True, False, False, False, False, True, False),
+            18: (False, True, False, False, False, False, False, True),
+            # DpadDown and a signle Button
+            132: (False, False, True, False, True, False, False, False),
+            68: (False, False, True, False, False, True, False, False),
+            36: (False, False, True, False, False, False, True, False),
+            20: (False, False, True, False, False, False, False, True),
+            # DpadLeft and a single Button
+
+        }
+        self.DpadUp, self.DpadRight, self.DpadDown, self.DpadLeft, self.triangle, self.circle, self.cross, self.square = map.get(self.data[5], (False, False, False, False, False, False, False, False))
